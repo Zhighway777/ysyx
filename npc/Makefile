@@ -46,7 +46,7 @@ run:
 	$(BIN)
 	@$^
 
-SIMNAME = mux41_t
+SIMNAME = encoder83
 
 sim:
 	verilator -Wall ./vsrc/$(SIMNAME).v ./csrc_bkup/sim_$(SIMNAME).cpp --Mdir $(SIMNAME) -cc --trace --exe --build

@@ -25,13 +25,35 @@ module top(
     output [7:0] seg7
 );
 
+wire [2:0]encoder_out;
+
 led my_led(
     .clk(clk),
     .rst(rst),
-    .btn(btn),
-    .sw(sw),
+//    .btn(btn),
+    .data(encoder_out),
     .ledr(ledr)
 
+);
+
+seg my_seg(
+    .clk(clk),
+    .rst(rst),
+		.data(encoder_out),
+    .o_seg0(seg0),
+    .o_seg1(seg1),
+    .o_seg2(seg2),
+    .o_seg3(seg3),
+    .o_seg4(seg4),
+    .o_seg5(seg5),
+    .o_seg6(seg6),
+    .o_seg7(seg7)
+);
+
+encoder83 myencoder(
+	.x(sw[7:0]),
+	.en(sw[8]),
+	.y(encoder_out)
 );
 
 endmodule
