@@ -46,17 +46,20 @@ run:
 	$(BIN)
 	@$^
 
-#	rsync -a $(TOPNAME)/ obj/$(TOPNAME)
-#	rm -rf $(TOPNAME)/
-#	./obj/$(TOPNAME)/V$(TOPNAME)
-#	gtkwave dump.vcd 
-#	mv -i dump.vcd ./vcd/$(TOPNAME).vcd
+SIMNAME = mux41_t
 
-#sim:
-#	$(VERILATOR) -Wall ./vsrc/$(TOPNAME).v ./csrc_bkup/sim
+sim:
+	verilator -Wall ./vsrc/$(SIMNAME).v ./csrc_bkup/sim_$(SIMNAME).cpp --Mdir $(SIMNAME) -cc --trace --exe --build
+	./$(SIMNAME)/V$(SIMNAME)
+	rsync -a $(SIMNAME)/ obj/$(SIMNAME)
+	rm -rf $(SIMNAME)/
+	./obj/$(SIMNAME)/V$(SIMNAME)
+	gtkwave dump.vcd 
+	mv -i dump.vcd ./vcd/$(SIMNAME).vcd
 
 clean:
 	rm -rf $(BUILD_DIR)
+
 .PHONY: default all clean run sim
 include ../Makefile
 

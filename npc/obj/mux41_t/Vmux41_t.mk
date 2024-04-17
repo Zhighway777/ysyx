@@ -45,7 +45,7 @@ VM_USER_CLASSES = \
 
 # User .cpp directories (from .cpp's on Verilator command line)
 VM_USER_DIR = \
-	./csrc \
+	./csrc_bkup \
 
 
 ### Default rules...
@@ -57,7 +57,7 @@ include $(VERILATOR_ROOT)/include/verilated.mk
 ### Executable rules... (from --exe)
 VPATH += $(VM_USER_DIR)
 
-sim_mux41_t.o: ./csrc/sim_mux41_t.cpp
+sim_mux41_t.o: ./csrc_bkup/sim_mux41_t.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
 
 ### Link rules... (from --exe)
