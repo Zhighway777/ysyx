@@ -38,25 +38,13 @@ $(BIN): $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
 		$(addprefix -CFLAGS , $(CXXFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
 
-
 all: default
 
-run:
-	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	$(BIN)
+run: $(BIN)
 	@$^
-
-#	rsync -a $(TOPNAME)/ obj/$(TOPNAME)
-#	rm -rf $(TOPNAME)/
-#	./obj/$(TOPNAME)/V$(TOPNAME)
-#	gtkwave dump.vcd 
-#	mv -i dump.vcd ./vcd/$(TOPNAME).vcd
-
-#sim:
-#	$(VERILATOR) -Wall ./vsrc/$(TOPNAME).v ./csrc_bkup/sim
 
 clean:
 	rm -rf $(BUILD_DIR)
-.PHONY: default all clean run sim
-include ../Makefile
+
+.PHONY: default all clean run
 

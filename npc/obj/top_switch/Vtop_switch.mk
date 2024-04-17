@@ -2,9 +2,9 @@
 # DESCRIPTION: Verilator output: Makefile for building Verilated archive or executable
 #
 # Execute this makefile from the object directory:
-#    make -f Vm_mux21.mk
+#    make -f Vtop_switch.mk
 
-default: Vm_mux21
+default: Vtop_switch
 
 ### Constants...
 # Perl executable (from $PERL)
@@ -30,38 +30,43 @@ VM_SC_TARGET_ARCH = linux
 
 ### Vars...
 # Design prefix (from --prefix)
-VM_PREFIX = Vm_mux21
+VM_PREFIX = Vtop_switch
 # Module prefix (from --prefix)
-VM_MODPREFIX = Vm_mux21
+VM_MODPREFIX = Vtop_switch
 # User CFLAGS (from -CFLAGS on Verilator command line)
 VM_USER_CFLAGS = \
 
 # User LDLIBS (from -LDFLAGS on Verilator command line)
 VM_USER_LDLIBS = \
+	/home/hw/ysyx-workbench/nvboard/usr \
 
 # User .cpp files (from .cpp's on Verilator command line)
 VM_USER_CLASSES = \
-	sim_mux21 \
+	auto_bind \
+	sim_switch \
 
 # User .cpp directories (from .cpp's on Verilator command line)
 VM_USER_DIR = \
-	./csrc \
+	/home/hw/ysyx-workbench/npc/constr \
+	/home/hw/ysyx-workbench/npc/csrc \
 
 
 ### Default rules...
 # Include list of all generated classes
-include Vm_mux21_classes.mk
+include Vtop_switch_classes.mk
 # Include global rules
 include $(VERILATOR_ROOT)/include/verilated.mk
 
 ### Executable rules... (from --exe)
 VPATH += $(VM_USER_DIR)
 
-sim_mux21.o: ./csrc/sim_mux21.cpp
+auto_bind.o: /home/hw/ysyx-workbench/npc/constr/auto_bind.cpp
+	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
+sim_switch.o: /home/hw/ysyx-workbench/npc/csrc/sim_switch.cpp
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
 
 ### Link rules... (from --exe)
-Vm_mux21: $(VK_USER_OBJS) $(VK_GLOBAL_OBJS) $(VM_PREFIX)__ALL.a $(VM_HIER_LIBS)
+Vtop_switch: $(VK_USER_OBJS) $(VK_GLOBAL_OBJS) $(VM_PREFIX)__ALL.a $(VM_HIER_LIBS)
 	$(LINK) $(LDFLAGS) $^ $(LOADLIBES) $(LDLIBS) $(LIBS) $(SC_LIBS) -o $@
 
 

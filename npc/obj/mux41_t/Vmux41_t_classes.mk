@@ -2,7 +2,7 @@
 # DESCRIPTION: Verilator output: Make include file with class lists
 #
 # This file lists generated Verilated files, for including in higher level makefiles.
-# See Vm_mux21.mk for the caller.
+# See Vmux41_t.mk for the caller.
 
 ### Switches...
 # C11 constructs required?  0/1 (always on now)
@@ -23,24 +23,24 @@ VM_TRACE_FST = 0
 ### Object file lists...
 # Generated module classes, fast-path, compile with highest optimization
 VM_CLASSES_FAST += \
-	Vm_mux21 \
-	Vm_mux21___024root__DepSet_h6f342420__0 \
-	Vm_mux21___024root__DepSet_h9c3b5aed__0 \
+	Vmux41_t \
+	Vmux41_t___024root__DepSet_h392ea34a__0 \
+	Vmux41_t___024root__DepSet_h94836b0e__0 \
 
 # Generated module classes, non-fast-path, compile with low/medium optimization
 VM_CLASSES_SLOW += \
-	Vm_mux21___024root__Slow \
-	Vm_mux21___024root__DepSet_h6f342420__0__Slow \
-	Vm_mux21___024root__DepSet_h9c3b5aed__0__Slow \
+	Vmux41_t___024root__Slow \
+	Vmux41_t___024root__DepSet_h392ea34a__0__Slow \
+	Vmux41_t___024root__DepSet_h94836b0e__0__Slow \
 
 # Generated support classes, fast-path, compile with highest optimization
 VM_SUPPORT_FAST += \
-	Vm_mux21__Trace__0 \
+	Vmux41_t__Trace__0 \
 
 # Generated support classes, non-fast-path, compile with low/medium optimization
 VM_SUPPORT_SLOW += \
-	Vm_mux21__Syms \
-	Vm_mux21__Trace__0__Slow \
+	Vmux41_t__Syms \
+	Vmux41_t__Trace__0__Slow \
 
 # Global classes, need linked once per executable, fast-path, compile with highest optimization
 VM_GLOBAL_FAST += \

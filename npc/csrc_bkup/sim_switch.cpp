@@ -13,7 +13,7 @@ int main(int argc, char** argv) {
 	  contextp->traceEverOn(true);
 	  VerilatedVcdC* tfp = new VerilatedVcdC;
 	  top->trace(tfp, 0); 
-	  tfp->open("wave.vcd");
+	  tfp->open("dump.vcd");
 
 		int i=20;
 		while (!contextp->gotFinish() && i>=0)

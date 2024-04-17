@@ -1,6 +1,6 @@
 #include "verilated.h"
 #include "verilated_vcd_c.h"
-#include "../obj_dir/Vmux21.h"
+#include "../mux21/Vmux21.h"
 
 VerilatedContext* contextp = NULL;
 VerilatedVcdC* tfp = NULL;
