@@ -1,13 +1,13 @@
 module led(
   input clk,
   input rst,
-  input [2:0] data,
+  input [15:0] data,
 //  input [15:0] sw,
   output [15:0] ledr
 );
 
 
-assign ledr[15] = (data != 3'b000 ) ? 1'b1 : 1'b0;
+assign ledr = data;
 
 /*******mux41********
 	mux41_t my_mux41(
