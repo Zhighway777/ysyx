@@ -25,6 +25,8 @@ module top(
     output [7:0] seg7
 );
 
+wire [2:0]encoder_out;
+
 led my_led(
     .clk(clk),
     .rst(rst),
@@ -48,13 +50,11 @@ seg my_seg(
     .o_seg7(seg7)
 );
 
-
-alu my_alu(
-
+encoder83 myencoder(
+	.x(sw[7:0]),
+	.en(sw[8]),
+	.y(encoder_out)
 );
-
-
-
 
 endmodule
 

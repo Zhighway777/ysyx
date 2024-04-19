@@ -24,6 +24,8 @@ VSRCS = $(shell find $(abspath ./vsrc) -name "*.v")
 CSRCS = $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cc" -or -name "*.cpp")
 CSRCS += $(SRC_AUTO_BIND)
 
+CSRCBKUP = $(shell find $(abspath ./csrc_bkup) -name "*.c" -or -name "*.cc" -or -name "*.cpp")
+
 # rules for NVBoard
 include $(NVBOARD_HOME)/scripts/nvboard.mk
 
@@ -46,10 +48,10 @@ run:
 	$(BIN)
 	@$^
 
-SIMNAME = encoder83
+SIMNAME = alu
 
 sim:
-	verilator -Wall ./vsrc/$(SIMNAME).v ./csrc_bkup/sim_$(SIMNAME).cpp --Mdir $(SIMNAME) -cc --trace --exe --build
+	verilator -Wall -I$(abspath ./vsrc) ./vsrc/$(SIMNAME).v ./csrc_bkup/sim_$(SIMNAME).cpp --Mdir $(SIMNAME) -cc --trace --exe --build -Wno-UNOPTFLAT
 	./$(SIMNAME)/V$(SIMNAME)
 	rsync -a $(SIMNAME)/ obj/$(SIMNAME)
 	rm -rf $(SIMNAME)/
