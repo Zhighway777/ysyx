@@ -12,7 +12,7 @@ module seg(
   output [7:0] o_seg7
 );
 
-wire [7:0] segs [7:0];
+wire [7:0] segs [15:0];
 
 assign segs[0] = 8'b11111101;
 assign segs[1] = 8'b01100000;
@@ -22,8 +22,10 @@ assign segs[4] = 8'b01100110;
 assign segs[5] = 8'b10110110;
 assign segs[6] = 8'b10111110;
 assign segs[7] = 8'b11100000;
-//assign segs[8] = 8'b11111111;
-//assign segs[9] = 8'b11110111;
+assign segs[8] = 8'b11111111;
+assign segs[9] = 8'b11110111;
+
+
 
 always @ (data) begin
 	

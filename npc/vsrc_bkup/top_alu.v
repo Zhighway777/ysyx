@@ -15,8 +15,8 @@ module top(
     output [7:0] VGA_R,
     output [7:0] VGA_G,
     output [7:0] VGA_B,
-    output [7:0] seg0,    
-		output [7:0] seg1,
+    output [7:0] seg0,
+    output [7:0] seg1,
     output [7:0] seg2,
     output [7:0] seg3,
     output [7:0] seg4,
@@ -24,7 +24,7 @@ module top(
     output [7:0] seg6,
     output [7:0] seg7
 );
-/*
+
 led my_led(
     .clk(clk),
     .rst(rst),
@@ -32,18 +32,12 @@ led my_led(
     .data(led_data),
     .ledr(ledr)
 );
-*/
 
-wire [7:0]rand2seg;
 
-random my_random(
-			.clk(btn[0]), //bottom [R]
-			.rand_num(rand2seg)
-);
-
-seg_hex my_seg0( 
+seg my_seg0(
+    .clk(clk),
     .rst(rst),
-		.bit_sel(rand2seg[7:0]),
+		.data(out2seg0),
     .o_seg0(seg0),
 	  .o_seg1(seg1),
     .o_seg2(seg2),
@@ -52,6 +46,22 @@ seg_hex my_seg0(
     .o_seg5(seg5),
     .o_seg6(seg6),
     .o_seg7(seg7) 
+);
+
+
+wire [3:0]out2seg0;
+
+wire out_zero, out_of,out_carry;
+wire [15:0]led_data= { {13{1'b0}}, out_carry, out_of, out_zero};
+
+alu my_alu(
+		.data_a(sw[3:0]),
+		.data_b(sw[7:4]),
+		.sel(sw[15:13]),
+		.data_out( out2seg0),
+		.zero(out_zero),		//zero 提示 led0
+		.overflow(out_of),	//overflow flag led1
+		.carry(out_carry)		//carry flag led2
 );
 
 
