@@ -24,15 +24,26 @@ module top(
     output [7:0] seg6,
     output [7:0] seg7
 );
-
-
-wire [7:0] key_num, asc_num, key_times;
-
-seg_hex my_seg( 
+/*
+led my_led(
+    .clk(clk),
     .rst(rst),
-		.key_num(key_num),
-		.asc_num(asc_num),
-		.key_times(key_times),
+//    .btn(btn),
+    .data(led_data),
+    .ledr(ledr)
+);
+*/
+
+wire [7:0]rand2seg;
+
+random my_random(
+			.clk(btn[0]), //bottom [R]
+			.rand_num(rand2seg)
+);
+
+seg_hex my_seg0( 
+    .rst(rst),
+		.bit_sel(rand2seg[7:0]),
     .o_seg0(seg0),
 	  .o_seg1(seg1),
     .o_seg2(seg2),
@@ -42,19 +53,6 @@ seg_hex my_seg(
     .o_seg6(seg6),
     .o_seg7(seg7) 
 );
-
-
-ps2_keyboard(
-		.clk(clk),
-		.clrn(),
-		.ps2_clk(),
-		.ps2_data(),
-		.data(),
-		.ready(),
-		.nextdata_n(),
-		.overflow()
-);
-
 
 
 
