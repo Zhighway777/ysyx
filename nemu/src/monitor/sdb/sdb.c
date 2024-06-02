@@ -49,7 +49,8 @@ static int cmd_c(char *args) {
 
 
 static int cmd_q(char *args) {
-  return -1;
+	nemu_state.state = NEMU_QUIT; 
+	return -1;
 }
 
 static int cmd_help(char *args);
@@ -97,7 +98,7 @@ void sdb_set_batch_mode() {
 }
 
 void sdb_mainloop() {
-  if (is_batch_mode) {
+  if (is_batch_mode) { //batch mode指的是批处理人物，不需要实时交互
     cmd_c(NULL);
     return;
   }
