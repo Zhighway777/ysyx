@@ -55,6 +55,41 @@ static int cmd_q(char *args) {
 
 static int cmd_help(char *args);
 
+static int cmd_si(char *args){
+	uint64_t n = 0;
+	char *arg = strtok(NULL, " ");
+	if (arg == NULL){
+		cpu_exec(1);
+		return 0;
+	}
+	n = atoi(arg);
+	if (n < 0){
+		printf("The N is less than 0!\n");
+		return 0;
+	}
+	else if (n == 0){
+		n = 1;
+	}
+	cpu_exec(n);
+	return 0;
+}
+
+static int cmd_info(char *args){
+	char *arg = strtok(NULL, " ");
+	if (strcmp(arg,"r") == 0){
+	//print the reg info
+	isa_reg_display();
+	return 0;
+	}
+	else if (strcmp(arg,"w") == 0){
+	//print the watch point info
+	}
+	else{
+		printf("You should use 'r' or 'w' to get status.\n");
+	}
+	return 0;
+}
+
 static struct {
   const char *name;
   const char *description;
@@ -63,8 +98,10 @@ static struct {
   { "help", "Display information about all supported commands", cmd_help },
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
-
-  /* TODO: Add more commands */
+	{	"si", "Single execuate", cmd_si },
+	{	"info", "Print the status of registers, or print the watch point info", cmd_info} 
+ 
+	/* TODO: Add more commands */
 
 };
 
@@ -126,7 +163,7 @@ void sdb_mainloop() {
     int i;
     for (i = 0; i < NR_CMD; i ++) {
       if (strcmp(cmd, cmd_table[i].name) == 0) {
-        if (cmd_table[i].handler(args) < 0) { return; }
+				if (cmd_table[i].handler(args) < 0) { return; }
         break;
       }
     }
