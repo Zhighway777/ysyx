@@ -90,6 +90,46 @@ static int cmd_info(char *args){
 	return 0;
 }
 
+// 判断字符串是否是一个有效的十六进制数字
+bool is_hexadecimal(const char *str) {
+    // 检查字符串是否以 "0x" 或 "0X" 开头
+    if (str == NULL || strlen(str) < 3 || (str[0] != '0' || (str[1] != 'x' && str[1] != 'X'))) {
+        return false;
+    }
+
+    // 检查字符串的其余部分是否只包含有效的十六进制字符
+    for (int i = 2; str[i] != '\0'; i++) {
+        if (!isxdigit(str[i])) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+word_t paddr_read(paddr_t addr, int len);
+
+static int cmd_xmem(char *args){
+	char *arg = strtok(NULL, " ");
+	int len;
+	len = atoi(arg);
+	paddr_t addr;
+	//simple, constant the EXPR Number.
+	const char *expr = strtok(NULL, " ");
+	if (! is_hexadecimal(expr)){
+		printf("Please input Hexadecimal number!\n");
+	}
+	else{
+		sscanf(expr, "%x", &addr);
+		static int i;
+		for(i = 0; i < len; i++){
+			printf("%x: %08lx\n",addr, paddr_read(addr, 4));
+			addr += 4;
+		}
+	}
+	return 0;
+}
+
 static struct {
   const char *name;
   const char *description;
@@ -99,8 +139,8 @@ static struct {
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
 	{	"si", "Single execuate", cmd_si },
-	{	"info", "Print the status of registers, or print the watch point info", cmd_info} 
- 
+	{	"info", "Print the status of registers, or print the watch point info", cmd_info}, 
+	{"x", "Scan the Memory From 'EXPR' to 'EXPT+N'.", cmd_xmem},	
 	/* TODO: Add more commands */
 
 };
