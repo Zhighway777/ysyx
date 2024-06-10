@@ -130,6 +130,18 @@ static int cmd_xmem(char *args){
 	return 0;
 }
 
+static int cmd_comp(char * args){
+	//char *arg = strtok(NULL, " ");
+	//如果仍然[space]作为分隔符 那么表达式中的[space]会怎么样
+	bool success = true;
+	word_t res = expr(args, &success);
+	if (!success)
+		printf("The expression is invalid.\n");
+	else
+		printf("The result of the expression is %lu.\n", res);
+	return 0;
+}
+
 static struct {
   const char *name;
   const char *description;
@@ -141,6 +153,7 @@ static struct {
 	{	"si", "Single execuate", cmd_si },
 	{	"info", "Print the status of registers, or print the watch point info", cmd_info}, 
 	{"x", "Scan the Memory From 'EXPR' to 'EXPT+N'.", cmd_xmem},	
+	{"p", "Compute the value of expression.", cmd_comp},
 	/* TODO: Add more commands */
 
 };

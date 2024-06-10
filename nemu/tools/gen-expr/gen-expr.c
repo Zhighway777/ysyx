@@ -31,8 +31,56 @@ static char *code_format =
 "  return 0; "
 "}";
 
-static void gen_rand_expr() {
-  buf[0] = '\0';
+static uint32_t buf_p = 0;
+
+static int choose(uint32_t n){
+//generate a rand num < n
+return rand() % n;
+}
+
+static void gen(char c)	{
+	buf[buf_p ++] = c;
+}
+
+static inline void gen_blank(){
+	int blank_num = choose(3);
+	for (int i = 0;  i < blank_num; i++){
+		buf[buf_p ++] = ' ';
+	}
+}	
+
+static void gen_num(){
+	uint32_t num = rand() % 100;
+	uint32_t cnt = 0;
+	cnt =	sprintf(buf+buf_p, "%u", num);
+	buf_p = buf_p + cnt;
+	gen_blank();
+}
+#define MAX_DEPTH 5
+static void gen_rand_expr(int depth) {
+ // buf[0] = '\0';
+	if (depth > MAX_DEPTH){
+		gen_num();
+		return;
+	}
+	switch (choose(3)) {
+		case 0: gen_num();	break;
+		case 1:	gen('('); gen_rand_expr(depth+1); gen(')');	break;
+		//case 2:
+		default:{	
+			gen_rand_expr(depth + 1); 
+			switch (choose(4)) {
+                case 0: gen('+'); break; 
+                case 1: gen('-'); break; 
+                case 2: gen('*'); break; 
+                case 3: gen('/'); break; 
+								default: gen(' '); break;      
+			}
+			gen_blank();
+			gen_rand_expr(depth+1);	
+			break;
+		}
+	}
 }
 
 int main(int argc, char *argv[]) {
@@ -44,16 +92,17 @@ int main(int argc, char *argv[]) {
   }
   int i;
   for (i = 0; i < loop; i ++) {
-    gen_rand_expr();
-
+    buf_p = 0;
+		gen_rand_expr(0);
+		buf[buf_p] = '\0';
     sprintf(code_buf, code_format, buf);
 
     FILE *fp = fopen("/tmp/.code.c", "w");
     assert(fp != NULL);
     fputs(code_buf, fp);
     fclose(fp);
-
-    int ret = system("gcc /tmp/.code.c -o /tmp/.expr");
+		//add the parameter -Werror -Wall
+    int ret = system("gcc /tmp/.code.c -Werror -o /tmp/.expr");
     if (ret != 0) continue;
 
     fp = popen("/tmp/.expr", "r");
