@@ -15,6 +15,7 @@
 
 #include <isa.h>
 
+
 /* We use the POSIX regex functions to process regular expressions.
  * Type 'man regex' for more information about POSIX regex functions.
  */
@@ -46,17 +47,18 @@ static struct rule {
 	{"-", '-'},
 	{"\\*", '*'},
 	{"/", '/'},
-	{"[0-9]+", TK_NUM},
+	{"(0(x|X))[a-fA-F0-9]+|[0-9]+", TK_NUM},
 	{"\\(", '('},
 	{"\\)", ')'},
-	{"<", TK_LT},
-	{">", TK_GT},
 	{"<=", TK_LE},
 	{">=", TK_GE},
+	{"<", TK_LT},
+	{">", TK_GT},
 	{"==", TK_EQ},
 	{"!=", TK_NEQ},
 	{"&&", TK_AND},
 	{"\\|\\|", TK_OR},
+	{"\\$\\w+", TK_REG},
 };
 
 
@@ -65,8 +67,8 @@ static struct rule {
 //define the types of oprators
 #define OFTYPES(type, types) oftypes(type, types, ARRLEN(types))
 static int unary_types[] = {TK_NEG, TK_POS, TK_DEREF};
-static int unary_flag_types[] = {TK_NUM, ')'};//if tokens[i-1] not in this, then it is unary op
-static int non_op_types[] = {'(', ')', TK_NUM};
+static int unary_flag_types[] = {TK_NUM, ')', TK_REG};//if tokens[i-1] not in this, then it is unary op
+static int non_op_types[] = {'(', ')', TK_NUM, TK_REG};
 static bool oftypes(int type, int types[], int size){
 	for(int i = 0; i < size; i++) {
 		if (type == types[i])
@@ -130,12 +132,13 @@ static bool make_token(char *e) {
 						//no need to record, just skip it!	
 						break;
 		
-						case '-': case '+':
+						case '-': case '+': case '*':
 							if( check_unary(nr_token) ){
 								switch (rules[i].token_type)
 								{
-									case '-':	tokens[nr_token].type = TK_NEG;nr_token++;	break;
-									case '+': tokens[nr_token].type = TK_POS;nr_token++;	break;
+									case '-':	tokens[nr_token].type = TK_NEG;		nr_token++;	break;
+									case '+': tokens[nr_token].type = TK_POS;		nr_token++;	break;
+									case '*': tokens[nr_token].type = TK_DEREF;	nr_token++;	break;
 								}
 							}
 							else{
@@ -144,6 +147,7 @@ static bool make_token(char *e) {
 							}
 						break; 
 						case TK_NUM:
+						case TK_REG:
 						default: 
 							if (substr_len > 32){
 								Log("The token's str buffer is overflow\n");
@@ -152,7 +156,7 @@ static bool make_token(char *e) {
 							tokens[nr_token].type = rules[i].token_type;
 							//strncpy is good at controling the start and end of string.
 							//only record the num into string
-							if(tokens[nr_token].type == TK_NUM)
+							if(tokens[nr_token].type == TK_NUM || tokens[nr_token].type == TK_REG)
 								strncpy(tokens[nr_token].str, substr_start, substr_len);
 							tokens[nr_token].str[substr_len] = '\0';
 							nr_token++; //token is updated here!
@@ -196,13 +200,22 @@ static bool check_unary(int i){
 
 int oprator_pir(int op){
 	switch (op){ 
-		case TK_NEG: 
+		case TK_NEG:
+		case TK_DEREF:
+		case TK_POS:	
 							return 1;
 		case '*': 
 		case '/':	return 2;
 		case '+':
 		case '-':	return 3;
-	
+		case TK_LT: case TK_GT: case TK_GE: case TK_LE:
+							return 4;
+		case TK_EQ: case TK_NEQ:
+							return 5;
+		case TK_AND: 
+							return 6;
+		case TK_OR:
+							return 7;
 	//	case TK_DEREF: return 3;
 		default : 
 							Log("You give an illeagal operator\n");
@@ -223,8 +236,8 @@ static int domain_oprator(int p, int q){
 			cnt --;
 		//用于排除在()中的操作符
 		if(cnt > 0 || OFTYPES(tokens[i].type, non_op_types) )	continue;
-		if( tokens[i].type == TK_NEG ){
-			if(  oprator_pir(tokens[i].type) > pir ){
+		if( tokens[i].type == TK_NEG || tokens[i].type == TK_POS){
+			if(  oprator_pir(tokens[i].type) >= pir ){
 				pir = oprator_pir(tokens[i].type);
 				domain = i;
 			}
@@ -240,10 +253,13 @@ static int domain_oprator(int p, int q){
 	return domain;
 }
 
+word_t vaddr_read(vaddr_t addr, int len);
+
 static word_t comp_unary(int op_type, word_t val, bool *success){
 	switch(op_type){
 		case TK_NEG:	return -val;
 		case TK_POS:	return val;
+		case TK_DEREF:	return vaddr_read(val, 8);
 		default:
 						*success = false;
 	}
@@ -261,7 +277,16 @@ static word_t comp_binary(word_t val1, int op_type, word_t val2, bool *success){
 									return 0;
 								}
 								return (sword_t)val1 / (sword_t)val2;//because the testcase
-      default:
+     
+			case TK_AND: return val1 && val2;
+			case TK_OR: return val1 || val2;
+			case TK_EQ: return val1 == val2;
+			case TK_NEQ: return val1 != val2;
+			case TK_GT: return val1 > val2;
+			case TK_LT: return val1 < val2;
+			case TK_GE: return val1 >= val2;
+			case TK_LE: return val1 <= val2; 
+			default:
 								Log("the oprator is illeagal!\n");
 							 //	assert(0);
 							 *success = false;
@@ -278,13 +303,18 @@ static word_t eval(int p, int q, bool *success) {
 		return 0;
 	}
   else if (p == q) {
-		if(tokens[p].type != TK_NUM){
-			*success = false;
-			return 0;
+		switch (tokens[p].type){
+			case TK_NUM:
+				if (strncmp("0x", tokens[p].str, 2) == 0 || strncmp("0X", tokens[p].str, 2)  )
+					return strtol(tokens[p].str, NULL, 16);
+				else
+					return strtol(tokens[p].str, NULL, 10);
+			case TK_REG:
+				return isa_reg_str2val(tokens[p].str, success);
+			default:
+				*success = false;
+				return 0;
 		}
-		//promise the return value is 64 bits-unsigned number
-		word_t ret = atoi(tokens[p].str);
-		return ret; //str2val
   }
   else{
 	 	if ( check_parentheses(p, q) ) {
@@ -322,20 +352,6 @@ word_t expr(char *e, bool *success) {
     *success = false;
     return 0;
   }
-/*	for(int i=0; i < nr_token; i++){
-		if(	check_unary(i) )
-		{
-				switch(tokens[i].type){
-					case '-':
-							tokens[i].type = TK_NEG;
-							break;
-					default:
-							;
-							break;	
-				}	
-		}
-	}*/
-  /* TODO: Insert codes to evaluate the expression. */
 	return eval(0, nr_token-1, success);	
 	
 }
