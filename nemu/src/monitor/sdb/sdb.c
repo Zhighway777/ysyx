@@ -74,6 +74,11 @@ static int cmd_si(char *args){
 	return 0;
 }
 
+
+//declaratioin 
+void wp_scan();
+
+
 static int cmd_info(char *args){
 	char *arg = strtok(NULL, " ");
 	if (strcmp(arg,"r") == 0){
@@ -83,9 +88,10 @@ static int cmd_info(char *args){
 	}
 	else if (strcmp(arg,"w") == 0){
 	//print the watch point info
+		wp_scan();
 	}
 	else{
-		printf("You should use 'r' or 'w' to get status.\n");
+		printf("You should use 'r' for regsiters or 'w' for watchpoints to get status.\n");
 	}
 	return 0;
 }
@@ -134,12 +140,38 @@ static int cmd_comp(char * args){
 	//char *arg = strtok(NULL, " ");
 	//如果仍然[space]作为分隔符 那么表达式中的[space]会怎么样
 	bool success = true;
-	word_t res = expr(args, &success);
+	word_t val = expr(args, &success);
 	if (!success)
 		printf("The expression is invalid.\n");
 	else
-		printf("The result of the expression is %lu.\n", res);
+		printf("The result of the expression is %lu.\n",val );
 	return 0;
+}
+
+void wp_print(char* args, word_t val);
+
+static int cmd_wp(char * args){
+	bool success;
+	word_t val = expr(args, &success);
+	if(! success)
+			printf("illeagal expression\n");
+	else
+			wp_print(args, val);	
+	return 0;
+}
+
+void wp_remove(int nr);
+
+static int cmd_dwp(char *args){
+	char *arg = strtok(NULL, " ");
+ 	if(arg == NULL){
+		printf("no args\n");
+		return 0;
+	}	else	{
+		int nr = strtol(arg, NULL, 10); //or atoi()
+		wp_remove(nr);
+		return 0;
+	}
 }
 
 static struct {
@@ -154,6 +186,9 @@ static struct {
 	{	"info", "Print the status of registers, or print the watch point info", cmd_info}, 
 	{"x", "Scan the Memory From 'EXPR' to 'EXPT+N'.", cmd_xmem},	
 	{"p", "Compute the value of expression.", cmd_comp},
+	{"w", "Set a watchpoint with EXPR", cmd_wp},
+	{"d", "delete the Number N of watchpoint", cmd_dwp},
+	
 	/* TODO: Add more commands */
 
 };

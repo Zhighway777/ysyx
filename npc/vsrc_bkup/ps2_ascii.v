@@ -44,4 +44,5 @@ always@(*) begin
 	
 			default: tx_out <= 8'h00;
     endcase
-end
+	end
+endmodule

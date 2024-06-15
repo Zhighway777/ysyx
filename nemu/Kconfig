@@ -154,11 +154,21 @@ config ITRACE_COND
 
 config DIFFTEST
   depends on TARGET_NATIVE_ELF
-  bool "Enable differential testing"
-  default n
+  bool "Enable differential testing" 
+	default n
   help
     Enable differential testing with a reference design.
     Note that this will significantly reduce the performance of NEMU.
+
+
+config WATCHPOINT
+	depends on TARGET_NATIVE_ELF
+	bool "Enable watchpoint"
+	default n
+	help
+		Enable the watchpoint.
+		Note that this will significantly reduce the performance of NEMU.
+
 
 choice
   prompt "Reference design"

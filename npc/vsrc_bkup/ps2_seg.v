@@ -1,8 +1,8 @@
 module ps2_seg(
-  input	rst;        
-  input	[7:0] key_num;    //PS2 key value
-	input	[7:0]	asc_num;		//ascii of key value
-	input	[7:0]	key_times;	//numbers of press
+  input	rst,        
+  input	[7:0] key_num,    //PS2 key value
+	input	[7:0]	asc_num,		//ascii of key value
+	input	[7:0]	key_times,	//numbers of press
   output	reg	 [7:0] o_seg0,
   output	reg	 [7:0] o_seg1,
   output	reg	 [7:0] o_seg2,

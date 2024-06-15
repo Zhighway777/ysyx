@@ -70,7 +70,7 @@ static int unary_types[] = {TK_NEG, TK_POS, TK_DEREF};
 static int unary_flag_types[] = {TK_NUM, ')', TK_REG};//if tokens[i-1] not in this, then it is unary op
 static int non_op_types[] = {'(', ')', TK_NUM, TK_REG};
 static bool oftypes(int type, int types[], int size){
-	for(int i = 0; i < size; i++) {
+	for(int i = 0; i < size; i++) { 
 		if (type == types[i])
 				return true;
 	}
@@ -216,7 +216,7 @@ int oprator_pir(int op){
 							return 6;
 		case TK_OR:
 							return 7;
-	//	case TK_DEREF: return 3;
+
 		default : 
 							Log("You give an illeagal operator\n");
 							assert(0);
@@ -235,9 +235,11 @@ static int domain_oprator(int p, int q){
 		else if(tokens[i].type == ')')
 			cnt --;
 		//用于排除在()中的操作符
-		if(cnt > 0 || OFTYPES(tokens[i].type, non_op_types) )	continue;
-		if( tokens[i].type == TK_NEG || tokens[i].type == TK_POS){
-			if(  oprator_pir(tokens[i].type) >= pir ){
+		if(cnt > 0 || OFTYPES(tokens[i].type, non_op_types) )	
+			continue;
+		//unary oprator cases
+		if( OFTYPES(tokens[i].type, unary_types) ){
+			if(  oprator_pir(tokens[i].type) > pir ){
 				pir = oprator_pir(tokens[i].type);
 				domain = i;
 			}

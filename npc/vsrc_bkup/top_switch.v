@@ -33,28 +33,11 @@ led my_led(
     .ledr(ledr)
 );
 */
-
-wire [7:0]rand2seg;
-
-random my_random(
-			.clk(btn[0]), //bottom [R]
-			.rand_num(rand2seg)
+switch my_switch(
+		.a(sw[0]),
+		.b(sw[1]),
+		.f(ledr[0])
 );
-
-seg_hex my_seg0( 
-    .rst(rst),
-		.bit_sel(rand2seg[7:0]),
-    .o_seg0(seg0),
-	  .o_seg1(seg1),
-    .o_seg2(seg2),
-    .o_seg3(seg3),
-    .o_seg4(seg4),
-    .o_seg5(seg5),
-    .o_seg6(seg6),
-    .o_seg7(seg7) 
-);
-
-
 
 endmodule
 

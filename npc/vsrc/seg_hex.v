@@ -1,8 +1,8 @@
 module seg_hex( 
   input rst,
 	input	 [7:0] bit_sel,
-  output	reg	 [7:0] o_seg0,
-  output	reg	 [7:0] o_seg1,
+  output reg[7:0] o_seg0,
+  output reg[7:0] o_seg1,
   output [7:0] o_seg2,
   output [7:0] o_seg3,
   output [7:0] o_seg4,
