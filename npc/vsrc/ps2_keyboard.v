@@ -1,12 +1,12 @@
-`timescale 1s / 1ms
+
 module ps2_keyboard(clk,clrn,ps2_clk,ps2_data,data,
-                    ready,nextdata_n,overflow);
+                    ready,sampling,nextdata_n,overflow);
     input clk,clrn,ps2_clk,ps2_data;
     input nextdata_n;
     output [7:0] data;
     output reg ready;
     output reg overflow;     // fifo overflow
-    
+		output sampling;    
 		// internal signal, for test
     reg [9:0] buffer;        // ps2_data bits
     reg [7:0] fifo[7:0];     // data fifo
@@ -19,7 +19,7 @@ module ps2_keyboard(clk,clrn,ps2_clk,ps2_data,data,
         ps2_clk_sync <=  {ps2_clk_sync[1:0],ps2_clk};
     end
 
-    wire sampling = ps2_clk_sync[2] & ~ps2_clk_sync[1];
+    assign sampling = ps2_clk_sync[2] & ~ps2_clk_sync[1];
 
     always @(posedge clk) begin
         if (clrn == 0) begin // reset

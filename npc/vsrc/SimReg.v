@@ -1,3 +1,6 @@
+//寄存器构造模块 可以快速构造多个寄存器
+//WIDTH：输入和输出数据的位宽
+//INIT：复位后输出的默认值
 module SimReg #(parameter WIDTH = 4, parameter INIT = 0) 
 (
   input wire clk,

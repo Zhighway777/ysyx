@@ -13,10 +13,17 @@ void step_and_dump_wave(){
   tfp->dump(contextp->time());
 }
 void sim_init(){
-  contextp = new VerilatedContext;
-  tfp = new VerilatedVcdC;
+	contextp = new VerilatedContext; 
+	tfp = new VerilatedVcdC;
   top = new Vmux21;
-  contextp->traceEverOn(true);
+
+		// 设置仿真的时间单位和时间精度
+  contextp->timeunit(-9);   // 设置时间单位为1ns（10^-9秒）
+  contextp->timeprecision(-12); // 设置时间精度为1ps（10^-12秒）
+	
+ 
+ 
+	contextp->traceEverOn(true);
   top->trace(tfp, 0);
   tfp->open("dump.vcd");
 }

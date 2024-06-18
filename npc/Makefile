@@ -4,6 +4,7 @@ INC_PATH ?=
 
 VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  \
+										--timing \
 				-O3 --x-assign fast --x-initial fast --noassert#For best performance
 
 BUILD_DIR = ./build
@@ -48,10 +49,10 @@ run:
 	$(BIN)
 	@$^
 
-SIMNAME = random
+SIMNAME = mux21
 
 sim:
-	verilator -Wall -I$(abspath ./vsrc) ./vsrc/$(SIMNAME).v ./csrc_bkup/sim_$(SIMNAME).cpp --Mdir $(SIMNAME) -cc --trace --exe --build -Wno-UNOPTFLAT
+	verilator -Wall -I$(abspath ./vsrc) ./vsrc/$(SIMNAME).v ./csrc_bkup/sim_$(SIMNAME).cpp --Mdir $(SIMNAME) -cc --trace --exe --build -Wno-UNOPTFLAT --timing
 	./$(SIMNAME)/V$(SIMNAME)
 	rsync -a $(SIMNAME)/ obj/$(SIMNAME)
 	rm -rf $(SIMNAME)/

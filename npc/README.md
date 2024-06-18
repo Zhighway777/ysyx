@@ -5,6 +5,8 @@ constr
 csrc/csrc _ bkup
 |
 |------C++编写的仿真文件，结合verilator用于对verilog进行波形仿真
+|------Please refer other sim.cpp as the example.
+|------The way to name:sim_xxxxx.cpp
 obj
 |
 |------用于存放verilator生成的仿真相关文件
@@ -22,11 +24,10 @@ vsrc _ bkup
 使用方法：
 1.仿真
 	修改Makefile中的SIMNAME 对硬件进行波形仿真
-	其中SIMNAME = xxx    存放于(./csrc_bkup/sim_)xxx 与verilog名称保持一致
-	
+	其中SIMNAME = xxx    存放于(./csrc_bkup/sim_)xxx 与verilog名称保持一致	
 	在/npc文件夹下 make sim即可得到仿真结果
+
 2.接入NVBoard
 	将./vsrc_bkup/xxx_top.v 复制到vsrc/top.v
 	即： cp ./vsrc_bkup/xxx_top.v vsrc/top.v
-
-	在/npc文件夹下 make clean 后 make run
+	在/npc文件夹下 make clean 后 make run即可进行NVBoard板上实验

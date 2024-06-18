@@ -1,13 +1,14 @@
-`timescale 1ns / 1ps
+`timescale 1s / 1ms
 module ps2_keyboard_model(
     output reg ps2_clk,
-    output reg ps2_data
-    );
+    output reg ps2_data,
+		input [7:0] code  
+	);
 parameter [31:0] kbd_clk_period = 60;
 initial ps2_clk = 1'b1;
 
 task kbd_sendcode;
-    input [7:0] code; // key to be sent
+   // input [7:0] code; // key to be sent
     integer i;
 
     reg[10:0] send_buffer;

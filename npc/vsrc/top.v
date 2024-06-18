@@ -24,26 +24,59 @@ module top(
     output [7:0] seg6,
     output [7:0] seg7
 );
-/*
+
+wire ready, overflow, sampling;
+wire [15:0] led_data;
+wire [7:0]	scan_code;
+wire [7:0]	ascii_code;
+wire [7:0]	key_count;
+wire				key_released;
+reg					nextdata_n;
+wire				clrn;
+assign clrn = !rst;//clrn default is high
+
+ps2_keyboard my_ps2_kbd(
+		//input
+		.clk(clk),
+		.clrn(clrn),
+		.ps2_clk(ps2_clk),
+		.ps2_data(ps2_data),
+		.nextdata_n(nextdata_n),
+		//output
+		.data(scan_code),
+		.ready(ready),
+		.overflow(overflow),
+		.sampling(sampling)
+);
+
+ps2_ascii my_ps2_decoder(
+		.clk(clk),
+		.clrn(clrn),
+		.scan_code(scan_code),
+
+		.tx_out(ascii_code),
+		.key_released(key_released)
+);
+
+assign led_data[2:0] = {ready, overflow, sampling};
 led my_led(
     .clk(clk),
     .rst(rst),
 //    .btn(btn),
-    .data(led_data),
-    .ledr(ledr)
-);
-*/
-
-wire [7:0]rand2seg;
-
-random my_random(
-			.clk(btn[0]), //bottom [R]
-			.rand_num(rand2seg)
+    .data_in(led_data),
+    
+		.ledr(ledr)
 );
 
-seg_hex my_seg0( 
-    .rst(rst),
-		.bit_sel(rand2seg[7:0]),
+
+
+ps2_seg my_seg( 
+		.clk(clk), 
+		.clrn(clrn),
+		.scan_code(scan_code),
+		.asc_num(ascii_code),
+		.key_released(key_released),
+
     .o_seg0(seg0),
 	  .o_seg1(seg1),
     .o_seg2(seg2),
@@ -53,6 +86,18 @@ seg_hex my_seg0(
     .o_seg6(seg6),
     .o_seg7(seg7) 
 );
+
+always @(posedge clk or negedge rst) begin
+        if (!rst) begin
+            nextdata_n <= 1'b1;  // 初始状态为高
+        end else begin
+            if (ready) begin
+                nextdata_n <= 1'b0;  // 当 ready 为高时，读取下一个数据
+            end else begin
+                nextdata_n <= 1'b1;  // 否则保持高电平
+            end
+        end
+ end
 
 
 

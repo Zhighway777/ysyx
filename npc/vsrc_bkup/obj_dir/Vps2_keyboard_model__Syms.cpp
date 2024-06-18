@@ -1,16 +1,16 @@
 // Verilated -*- C++ -*-
 // DESCRIPTION: Verilator output: Symbol table implementation internals
 
-#include "Vmux21__Syms.h"
-#include "Vmux21.h"
-#include "Vmux21___024root.h"
+#include "Vps2_keyboard_model__Syms.h"
+#include "Vps2_keyboard_model.h"
+#include "Vps2_keyboard_model___024root.h"
 
 // FUNCTIONS
-Vmux21__Syms::~Vmux21__Syms()
+Vps2_keyboard_model__Syms::~Vps2_keyboard_model__Syms()
 {
 }
 
-Vmux21__Syms::Vmux21__Syms(VerilatedContext* contextp, const char* namep, Vmux21* modelp)
+Vps2_keyboard_model__Syms::Vps2_keyboard_model__Syms(VerilatedContext* contextp, const char* namep, Vps2_keyboard_model* modelp)
     : VerilatedSyms{contextp}
     // Setup internal state of the Syms class
     , __Vm_modelp{modelp}
@@ -18,8 +18,8 @@ Vmux21__Syms::Vmux21__Syms(VerilatedContext* contextp, const char* namep, Vmux21
     , TOP{this, namep}
 {
     // Configure time unit / time precision
-    _vm_contextp__->timeunit(-9);
-    _vm_contextp__->timeprecision(-12);
+    _vm_contextp__->timeunit(0);
+    _vm_contextp__->timeprecision(-3);
     // Setup each module's pointers to their submodules
     // Setup each module's pointer back to symbol table (for public functions)
     TOP.__Vconfigure(true);
