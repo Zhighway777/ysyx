@@ -164,7 +164,7 @@ void wp_remove(int nr);
 
 static int cmd_dwp(char *args){
 	char *arg = strtok(NULL, " ");
- 	if(arg == NULL){
+	if(arg == NULL){
 		printf("no args\n");
 		return 0;
 	}	else	{

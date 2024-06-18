@@ -34,7 +34,7 @@ void init_wp_pool() {
   for (i = 0; i < NR_WP; i ++) {
     wp_pool[i].NO = i;
     wp_pool[i].next = (i == NR_WP - 1 ? NULL : &wp_pool[i + 1]);
-  }
+  } 
 
   head = NULL;
   free_ = wp_pool;
@@ -91,6 +91,7 @@ void wp_print(char* expr, word_t val){
 void wp_remove(int nr){
 	assert(nr < NR_WP);
 	WP* wp = &wp_pool[nr];
+	Log("wp_pool[nr] = %s\n", wp->expr);
 	free_up(wp);
 	printf("Delete watchpoint %d: %s \n", wp->NO, wp->expr);
 }
@@ -104,8 +105,10 @@ void wp_show(){
 		if (tmp->old_val != new_val){
 			printf("watchpoint %d : %s\n", tmp->NO, tmp->expr);
 			printf("Old value = %lu\n", tmp->old_val);
-			printf("New value = %lu\n", tmp->new_val);
+			printf("New value = %lu\n", new_val);
 			tmp->old_val = new_val;
+			printf("You attach the watchpoint!\n");
+			nemu_state.state = NEMU_STOP;
 		} 
 		tmp = tmp->next;
 	}	  
