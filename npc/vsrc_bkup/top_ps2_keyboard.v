@@ -88,7 +88,7 @@ ps2_seg my_seg(
 );
 
 always @(posedge clk or negedge rst) begin
-        if (rst) begin
+        if (!rst) begin
             nextdata_n <= 1'b1;  // 初始状态为高
         end else begin
             if (ready) begin

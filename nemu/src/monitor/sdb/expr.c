@@ -307,7 +307,7 @@ static word_t eval(int p, int q, bool *success) {
   else if (p == q) {
 		switch (tokens[p].type){
 			case TK_NUM:
-				if (strncmp("0x", tokens[p].str, 2) == 0 || strncmp("0X", tokens[p].str, 2)  )
+				if (strncmp("0x", tokens[p].str, 2) == 0 || strncmp("0X", tokens[p].str, 2)==0  )
 					return strtol(tokens[p].str, NULL, 16);
 				else
 					return strtol(tokens[p].str, NULL, 10);

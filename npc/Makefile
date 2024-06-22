@@ -49,7 +49,7 @@ run:
 	$(BIN)
 	@$^
 
-SIMNAME = mux21
+SIMNAME = fsm_bin
 
 sim:
 	verilator -Wall -I$(abspath ./vsrc) ./vsrc/$(SIMNAME).v ./csrc_bkup/sim_$(SIMNAME).cpp --Mdir $(SIMNAME) -cc --trace --exe --build -Wno-UNOPTFLAT --timing
